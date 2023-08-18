@@ -12,7 +12,7 @@ namespace Blackjack
         DealerWin,
         NoWin,
     }
-    // 블랙잭 게임을 구현하세요. 
+
     public class Blackjack
     {
         private static Blackjack _instance;
@@ -25,18 +25,21 @@ namespace Blackjack
             }
             return _instance;
         }
+
         Deck deck = Deck.Instance();
         Dealer dealer = Dealer.Instance();
+        Player player = new Player();
         bool doneGame = false;
         WINTYPE winner = WINTYPE.NoWin;
         string result = "";
 
-        public string PlayBlackjack(Player player)
+        public string PlayBlackjack()
         {
-            dealer.DrawCardFromDeck(deck);
-            player.DrawCardFromDeck(deck);
-            dealer.DrawCardFromDeck(deck);
-            player.DrawCardFromDeck(deck);
+            for(int i = 0; i < 2; i++)
+            {
+                player.DrawCardFromDeck(deck);
+                dealer.DrawCardFromDeck(deck);
+            }
             char input = 'y';
 
             while (Deck.Instance().ExistCard())
@@ -45,7 +48,7 @@ namespace Blackjack
 
                 Console.WriteLine("현재 당신이 가진 카드들 입니다.");
                 Console.WriteLine($"{player.Hand.GetAllCard()}");
-                ShowScore(player, false);
+                ShowScore(false);
 
                 Console.WriteLine("카드를 더 받으시려면 y를, 더 받지 않고 결과를 보시려면 n을 입력하세요.");
                 input = Console.ReadLine().ElementAt(0);
@@ -70,7 +73,7 @@ namespace Blackjack
                 dealer.DrawCardFromDeck(deck);
             }
             Console.WriteLine("승패가 가려져 게임이 종료되었습니다.\n아래 결과를 확인해주세요.");
-            SetResult(player);
+            SetResult();
             return result;
         }
 
@@ -84,7 +87,7 @@ namespace Blackjack
             return false;
         }
 
-        void SetResult(Player player)
+        void SetResult()
         {
             int playerTotal = player.Hand.GetTotalValue();
             int dealerTotal = dealer.Hand.GetTotalValue();
@@ -145,10 +148,10 @@ namespace Blackjack
                     break;
             }
 
-            ShowScore(player, true);
+            ShowScore(true);
         }
 
-        void ShowScore(Player player, bool showDealerScore)
+        void ShowScore(bool showDealerScore)
         {
             if(showDealerScore)
             {
