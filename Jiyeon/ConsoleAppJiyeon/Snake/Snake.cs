@@ -30,10 +30,6 @@ namespace Snake
             {
                 p.Draw();
             }
-            
-            Console.ForegroundColor = ConsoleColor.Green;
-            body.Last().Draw();
-            Console.ResetColor();
         }
 
         public void SetDirection(Direction direction)
