@@ -1,4 +1,4 @@
-﻿namespace MyApp
+﻿namespace ConsoleAppHyeongyo_Snake
 {
     internal class Program
     {
@@ -17,7 +17,8 @@
         {
             Random random = new Random();
             public bool IsExist { get; set; } = false;
-            public int[] RandomLoc() {
+            public int[] RandomLoc()
+            {
                 int X = random.Next(1, 18);
                 int Y = random.Next(1, 18);
                 int[] foodLoc = new int[2] { X, Y };
@@ -30,7 +31,7 @@
         {
             // 맵 배열 생성
             int[,] Map = new int[20, 20];
-            
+
             // 키 입력 변수 생성
             ConsoleKeyInfo keyInfo;
 
