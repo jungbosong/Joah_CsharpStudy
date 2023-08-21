@@ -74,7 +74,7 @@ namespace Sparta
             }
             else
             {
-                inventory.defensiveItems[idx].Equip();
+                inventory.defensiveItems[idx-1].Equip();
             }
         }
     }

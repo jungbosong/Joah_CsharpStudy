@@ -19,6 +19,7 @@ namespace Sparta
         }
 
         Player player = Player.Instance();
+        List<string> itemList = new List<string>();
 
         public void DisplayStartGame()
         {
@@ -68,12 +69,12 @@ namespace Sparta
             Console.WriteLine();
 
             // TODO 인벤토리 목록 보여주기
-            string[] list = SetItemList().Split("\n");
+            SetItemList();
             Console.BackgroundColor = ConsoleColor.Green;
-            Console.WriteLine(list[0]);
-            for(int i = 2; i < list.Length-1; i++)
+            Console.Write(itemList[0]);
+            for (int i = 1; i < itemList.Count; i++)
             {
-                Console.WriteLine($"- {list[i]}");
+                Console.Write($"- {itemList[i]}");
             }
             Console.WriteLine();
             Console.ResetColor();
@@ -97,12 +98,12 @@ namespace Sparta
             Console.Write(MsgDefine.EXPLAN_EQUIP);
 
             // TODO 장착 가능한 아이템 리스트 보여주기
-            string[] list = SetItemList().Split("\n");
+            SetItemList();
             Console.BackgroundColor = ConsoleColor.Green;
-            Console.WriteLine(list[0]);
-            for (int i = 2; i < list.Length-1; i++)
+            Console.Write(itemList[0]);
+            for (int i = 1; i < itemList.Count; i++)
             {
-                Console.WriteLine($"- {i-1} {list[i]}");
+                Console.Write($"- {i} {itemList[i]}");
             }
             Console.WriteLine();
             Console.ResetColor();
@@ -116,6 +117,7 @@ namespace Sparta
             else
             {
                 player.EquipItem(input);
+                DisplayManageEquipment();
             }
         }
 
@@ -138,36 +140,34 @@ namespace Sparta
             Console.Write(MsgDefine.INPUT_ACTION);
         }
 
-        public string SetItemList()
+        public void SetItemList()
         {
-            string result = "";
-            result += $"{MsgDefine.LIST_ITEM}\n";
+            itemList.Clear();
+            itemList.Add($"{MsgDefine.LIST_ITEM}\n");
 
             foreach(DefensiveItem item in player.inventory.defensiveItems)
             {
-                if(item.equipped)
+                string tmp = "";
+                if (item.equipped)
                 {
-                    result += MsgDefine.EQUIP;
+                    tmp += MsgDefine.EQUIP;
                 }
-                else
-                {
-                    result += $"{item.name}  | {MsgDefine.DEFENSIVE_POWER} +{item.def} | {item.explanation}\n";
-                }
+                tmp += $"{item.name}  | {MsgDefine.DEFENSIVE_POWER} +{item.def} | {item.explanation}\n";
+                
+                itemList.Add(tmp);
             }
 
             foreach (AttackItem item in player.inventory.attackItems)
             {
+                string tmp = "";
                 if (item.equipped)
                 {
-                    result += MsgDefine.EQUIP;
+                    tmp += MsgDefine.EQUIP;
                 }
-                else
-                {
-                    result += $"{item.name}  | {MsgDefine.OFFENSIVE_POWER} +{item.atk} | {item.explanation}\n";
-                }
-            }
+                tmp += $"{item.name}  | {MsgDefine.OFFENSIVE_POWER} +{item.atk} | {item.explanation}\n";
 
-            return result;
+                itemList.Add(tmp);
+            }
         }
 
         public void WriteWrongInput()
