@@ -18,10 +18,11 @@ namespace Sparta
             return _instance;
         }
 
-        string input;
+        Player player = Player.Instance();
 
         public void DisplayStartGame()
         {
+            player.Init();
             SetTitle(MsgDefine.MAIN);
             Console.Write(MsgDefine.OPENING_PHARASE);
 
@@ -66,6 +67,17 @@ namespace Sparta
             Console.Write(MsgDefine.EXPLAN_INVENTORY);
             Console.WriteLine();
 
+            // TODO 인벤토리 목록 보여주기
+            string[] list = SetItemList().Split("\n");
+            Console.BackgroundColor = ConsoleColor.Green;
+            Console.WriteLine(list[0]);
+            for(int i = 2; i < list.Length-1; i++)
+            {
+                Console.WriteLine($"- {list[i]}");
+            }
+            Console.WriteLine();
+            Console.ResetColor();
+
             SetAction("1. " + MsgDefine.MANAGE_EQUIP + "0. " + MsgDefine.OUT);           
             int input = CheckValidInput(0, 1);
             switch (input)
@@ -84,13 +96,26 @@ namespace Sparta
             SetTitle($"{MsgDefine.INVENTORY}-{MsgDefine.MANAGE_EQUIP}");
             Console.Write(MsgDefine.EXPLAN_EQUIP);
 
-            SetAction("0. " + MsgDefine.OUT);
-            int input = CheckValidInput(0, 0);
-            switch (input)
+            // TODO 장착 가능한 아이템 리스트 보여주기
+            string[] list = SetItemList().Split("\n");
+            Console.BackgroundColor = ConsoleColor.Green;
+            Console.WriteLine(list[0]);
+            for (int i = 2; i < list.Length-1; i++)
             {
-                case 0:
-                    DisplayInventory();
-                    break;
+                Console.WriteLine($"- {i-1} {list[i]}");
+            }
+            Console.WriteLine();
+            Console.ResetColor();
+
+            SetAction("0. " + MsgDefine.OUT);
+            int input = CheckValidInput(0, player.inventory.itemCount);
+            if(input == 0)
+            {
+                DisplayInventory();
+            }
+            else
+            {
+                player.EquipItem(input);
             }
         }
 
@@ -111,6 +136,38 @@ namespace Sparta
             Console.WriteLine();
             Console.WriteLine();
             Console.Write(MsgDefine.INPUT_ACTION);
+        }
+
+        public string SetItemList()
+        {
+            string result = "";
+            result += $"{MsgDefine.LIST_ITEM}\n";
+
+            foreach(DefensiveItem item in player.inventory.defensiveItems)
+            {
+                if(item.equipped)
+                {
+                    result += MsgDefine.EQUIP;
+                }
+                else
+                {
+                    result += $"{item.name}  | {MsgDefine.DEFENSIVE_POWER} +{item.def} | {item.explanation}\n";
+                }
+            }
+
+            foreach (AttackItem item in player.inventory.attackItems)
+            {
+                if (item.equipped)
+                {
+                    result += MsgDefine.EQUIP;
+                }
+                else
+                {
+                    result += $"{item.name}  | {MsgDefine.OFFENSIVE_POWER} +{item.atk} | {item.explanation}\n";
+                }
+            }
+
+            return result;
         }
 
         public void WriteWrongInput()
