@@ -25,10 +25,12 @@ namespace Sparta
 
         public void Init()
         {
+            attackItems.Clear();
             AttackItem attackItem = new AttackItem();
             attackItem.Init("낡은 검", "쉽게 볼 수 있는 낡은 검입니다.", 2);
             AddAttackItem(attackItem);
 
+            defensiveItems.Clear();
             DefensiveItem defensiveItem = new DefensiveItem();
             defensiveItem.Init("무쇠값옷", "무쇠로 만들어져 튼튼한 갑옷입니다.", 5);
             AddDefensiveItem(defensiveItem);

@@ -12,7 +12,6 @@ namespace Sparta
         public const string WRONG_INPUT = "잘못된 입력입니다.\n\n";
         public const string OUT = "나가기\n";
         public const string EQUIP = "[E]";
-        public const string COLON = " : ";
         public const string LEVEL = "Lv. ";
         public const string JOB = "Chad ";
         public const string OFFENSIVE_POWER = "공격력";

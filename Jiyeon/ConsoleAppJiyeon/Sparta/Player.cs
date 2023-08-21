@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Sparta
@@ -29,7 +31,7 @@ namespace Sparta
         }
 
         public int level = 1;
-        public Job job;
+        public Job job = Job.WARRIOR;
         public int hp = 100;
         public int atk = 10;
         public int increasedAtk = 0;
@@ -47,22 +49,40 @@ namespace Sparta
         public void UpdateInfo()
         {
             SetIncreasedAtk();
-            SetIncreasedDef();
+            SetIncreasedDef();   
         }
 
         public void SetIncreasedAtk()
         {
             foreach(AttackItem item in inventory.attackItems)
             {
-                increasedAtk += item.atk;
-            }
+                if (item.equipped)
+                {
+                    increasedAtk += item.atk;
+                    atk += increasedAtk;
+                }
+                else if(increasedAtk >= item.atk)
+                {
+                    atk -= increasedAtk;
+                    increasedAtk -= item.atk;
+                }
+            }            
         }
 
         public void SetIncreasedDef()
         {
             foreach (DefensiveItem item in inventory.defensiveItems)
             {
-                increasedDef += item.def;
+                if (item.equipped)
+                {
+                    increasedDef += item.def;
+                    def += increasedDef;
+                }
+                else if(increasedDef >= item.def)
+                {
+                    def -= increasedDef;
+                    increasedDef -= item.def;
+                }
             }
         }
 
@@ -76,6 +96,27 @@ namespace Sparta
             {
                 inventory.defensiveItems[idx-1].Equip();
             }
+        }
+
+        public string JobToString()
+        {
+            string result = "";
+            switch(job)
+            {
+                case Job.WARRIOR:
+                    result = "전사";
+                    break;
+                case Job.WIZARD:
+                    result = "마법사";
+                    break;
+                case Job.HEALER:
+                    result = "힐러";
+                    break;
+                case Job.TANKER:
+                    result = "탱커";
+                    break;
+            }
+            return result;
         }
     }
 }

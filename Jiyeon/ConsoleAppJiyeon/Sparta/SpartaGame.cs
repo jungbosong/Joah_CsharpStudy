@@ -20,10 +20,10 @@ namespace Sparta
 
         Player player = Player.Instance();
         List<string> itemList = new List<string>();
+        List<string> myInfo = new List<string>();
 
         public void DisplayStartGame()
         {
-            player.Init();
             SetTitle(MsgDefine.MAIN);
             Console.Write(MsgDefine.OPENING_PHARASE);
 
@@ -44,12 +44,13 @@ namespace Sparta
         {
             SetTitle(MsgDefine.SHOW_STATE);
             Console.Write(MsgDefine.EXPLAN_STATE);
-            Console.WriteLine(MsgDefine.LEVEL);
-            Console.WriteLine(MsgDefine.JOB + MsgDefine.COLON);
-            Console.WriteLine(MsgDefine.OFFENSIVE_POWER + MsgDefine.COLON);
-            Console.WriteLine(MsgDefine.DEFENSIVE_POWER + MsgDefine.COLON);
-            Console.WriteLine(MsgDefine.HP + MsgDefine.COLON);
-            Console.WriteLine(MsgDefine.GOLD + MsgDefine.COLON + "G");
+
+            SetMyInfo();
+            foreach (string info in myInfo)
+            {
+                Console.Write(info);
+            }
+
             Console.WriteLine();
 
             SetAction("0. " + MsgDefine.OUT);
@@ -68,7 +69,6 @@ namespace Sparta
             Console.Write(MsgDefine.EXPLAN_INVENTORY);
             Console.WriteLine();
 
-            // TODO 인벤토리 목록 보여주기
             SetItemList();
             Console.BackgroundColor = ConsoleColor.Green;
             Console.Write(itemList[0]);
@@ -97,7 +97,6 @@ namespace Sparta
             SetTitle($"{MsgDefine.INVENTORY}-{MsgDefine.MANAGE_EQUIP}");
             Console.Write(MsgDefine.EXPLAN_EQUIP);
 
-            // TODO 장착 가능한 아이템 리스트 보여주기
             SetItemList();
             Console.BackgroundColor = ConsoleColor.Green;
             Console.Write(itemList[0]);
@@ -168,6 +167,53 @@ namespace Sparta
 
                 itemList.Add(tmp);
             }
+        }
+
+        public void SetMyInfo()
+        {
+            myInfo.Clear();
+            player.UpdateInfo();
+            string tmp = "";
+            if(player.level < 10)
+            {
+                tmp = $"{MsgDefine.LEVEL}0{player.level}\n";
+            }
+            else
+            {
+                tmp = $"{MsgDefine.LEVEL}{player.level}\n";
+            }
+            myInfo.Add(tmp);
+
+            tmp = $"{MsgDefine.JOB} ( {player.JobToString()} )\n";
+            myInfo.Add(tmp);
+
+            if(player.increasedAtk == 0)
+            {
+                tmp = $"{MsgDefine.OFFENSIVE_POWER} : {player.atk}\n";
+                myInfo.Add(tmp);
+            }
+            else
+            {
+                tmp = $"{MsgDefine.OFFENSIVE_POWER} : {player.atk} (+{player.increasedAtk})\n";
+                myInfo.Add(tmp);
+            }
+            
+            if(player.increasedDef == 0)
+            {
+                tmp = $"{MsgDefine.DEFENSIVE_POWER} : {player.def}\n";
+                myInfo.Add(tmp);
+            }
+            else
+            {
+                tmp = $"{MsgDefine.DEFENSIVE_POWER} : {player.def} (+{player.increasedDef})\n";
+                myInfo.Add(tmp);
+            }
+
+            tmp = $"{MsgDefine.HP} : {player.hp}\n";
+            myInfo.Add(tmp);
+
+            tmp = $"{MsgDefine.GOLD} : {player.gold} G\n";
+            myInfo.Add(tmp);
         }
 
         public void WriteWrongInput()
