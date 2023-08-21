@@ -21,7 +21,7 @@ namespace Blackjack
 
         private readonly List<Card> cards;
 
-        public Deck()
+        private Deck()
         {
             cards = new List<Card>();
 

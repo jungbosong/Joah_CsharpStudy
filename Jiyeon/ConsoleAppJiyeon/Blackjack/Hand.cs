@@ -44,7 +44,7 @@ namespace Blackjack
             return total;
         }
 
-        public Rank GetRANK(int idx)
+        public Rank GetRank(int idx)
         {
             return cards[idx].Rank;
         }
