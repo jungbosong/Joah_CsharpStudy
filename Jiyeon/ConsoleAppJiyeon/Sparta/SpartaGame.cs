@@ -20,6 +20,7 @@ namespace Sparta
 
         Player player = Player.Instance();
         List<string> itemList = new List<string>();
+        List<string> storeItemList = new List<string>();
         List<string> myInfo = new List<string>();
 
         public void DisplayStartGame()
@@ -27,8 +28,8 @@ namespace Sparta
             SetTitle(MsgDefine.MAIN);
             Console.Write(MsgDefine.OPENING_PHARASE);
 
-            SetAction("1. " + MsgDefine.SHOW_STATE + "2. " + MsgDefine.INVENTORY);
-            int input = CheckValidInput(1, 2);
+            SetAction($"1. {MsgDefine.SHOW_STATE}2. {MsgDefine.INVENTORY}\n3. {MsgDefine.STORE}");
+            int input = CheckValidInput(1, 3);
             switch (input)
             {
                 case 1:
@@ -36,6 +37,9 @@ namespace Sparta
                     break;
                 case 2:
                     DisplayInventory();
+                    break;
+                case 3:
+                    DisplayStore();
                     break;
             }
         }
@@ -53,7 +57,7 @@ namespace Sparta
 
             Console.WriteLine();
 
-            SetAction("0. " + MsgDefine.OUT);
+            SetAction($"0. {MsgDefine.OUT}");
             int input = CheckValidInput(0, 0);
             switch (input)
             {
@@ -79,7 +83,7 @@ namespace Sparta
             Console.WriteLine();
             Console.ResetColor();
 
-            SetAction("1. " + MsgDefine.MANAGE_EQUIP + "0. " + MsgDefine.OUT);           
+            SetAction($"1. {MsgDefine.MANAGE_EQUIP}\n0. {MsgDefine.OUT}");           
             int input = CheckValidInput(0, 1);
             switch (input)
             {
@@ -107,7 +111,7 @@ namespace Sparta
             Console.WriteLine();
             Console.ResetColor();
 
-            SetAction("0. " + MsgDefine.OUT);
+            SetAction($"0. {MsgDefine.OUT}");
             int input = CheckValidInput(0, player.inventory.itemCount);
             if(input == 0)
             {
@@ -122,7 +126,32 @@ namespace Sparta
 
         public void DisplayStore()
         {
+            SetTitle($"{MsgDefine.STORE}\n");
+            Console.Write(MsgDefine.EXPLAN_STORE);
+            Console.WriteLine();
 
+            Console.Write(MsgDefine.GOLD_POSSESSION);
+            Console.WriteLine($"{player.gold} {MsgDefine.GOLD}\n");
+
+            SetStoreItemList();
+            Console.Write(storeItemList[0]);
+            for (int i = 1; i < storeItemList.Count; i++)
+            {
+                Console.Write($"- {storeItemList[i]}");
+            }
+            Console.WriteLine();
+
+            SetAction($"1. {MsgDefine.PURCHASE_ITEM}2. {MsgDefine.SELL_ITEM}0. {MsgDefine.OUT}");
+            int input = CheckValidInput(0, 2);
+            switch (input)
+            {
+                case 0:
+                    DisplayStartGame();
+                    break;
+                case 1:
+                    
+                    break;
+            }
         }
 
         public void SetTitle(string title)
@@ -171,6 +200,36 @@ namespace Sparta
                 tmp += $"{item.name}  | {MsgDefine.OFFENSIVE_POWER} +{item.atk} | {item.explanation}\n";
 
                 itemList.Add(tmp);
+            }
+        }
+        public void SetStoreItemList()
+        {
+            storeItemList.Clear();
+            storeItemList.Add($"{MsgDefine.LIST_ITEM}\n");
+
+            // TODO 상점 아이템 품목으로 변경해야 함
+            foreach (DefensiveItem item in player.inventory.defensiveItems)
+            {
+                string tmp = "";
+                if (item.equipped)
+                {
+                    tmp += MsgDefine.EQUIP;
+                }
+                tmp += $"{item.name}  | {MsgDefine.DEFENSIVE_POWER} +{item.def} | {item.explanation}\n";
+
+                storeItemList.Add(tmp);
+            }
+
+            foreach (AttackItem item in player.inventory.attackItems)
+            {
+                string tmp = "";
+                if (item.equipped)
+                {
+                    tmp += MsgDefine.EQUIP;
+                }
+                tmp += $"{item.name}  | {MsgDefine.OFFENSIVE_POWER} +{item.atk} | {item.explanation}\n";
+
+                storeItemList.Add(tmp);
             }
         }
 
