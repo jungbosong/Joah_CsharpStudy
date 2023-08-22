@@ -27,5 +27,10 @@ namespace Sparta
         public const string LIST_ITEM = "[아이템 목록]\n";
         public const string MANAGE_EQUIP = "장착 관리\n";
         public const string EXPLAN_EQUIP = "보유 중인 아이템의 장착 여부를 관리할 수 있습니다.\n장착할 아이템의 번호를 입력해 장착 및 해제할 수 있습니다.\n장착 중인 아이템은 \"[E]\"로 표시됩니다.\n\n";
+        public const string STORE = "상점";
+        public const string EXPLAN_STORE = "필요한 아이템을 얻을 수 있는 상점입니다.";
+        public const string GOLD_POSSESSION = "[보유 골드]\n";
+        public const string PURCHASE_ITEM = "아이템 구매\n";
+        public const string SELL_ITEM = "아이템 판매\n";
     }
 }

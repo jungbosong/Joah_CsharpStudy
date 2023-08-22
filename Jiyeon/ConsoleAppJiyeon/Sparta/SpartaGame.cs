@@ -120,6 +120,11 @@ namespace Sparta
             }
         }
 
+        public void DisplayStore()
+        {
+
+        }
+
         public void SetTitle(string title)
         {
             Console.Clear();

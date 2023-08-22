@@ -6,27 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sparta
 {
-    public interface IItem
-    {
-        //public Item MakeItem(string name, string explanation, int atk, int def);
-    }
-
-    public interface IEquipable: IItem
-    {
-        public void Equip();
-    }
-
-    public interface  IAttackable
-    {
-        public int Attack();
-    }
-
-    public interface IDefensible
-    {
-        public int Defense();
-    }
-
-    public class AttackItem: Item, IAttackable, IEquipable
+    public class AttackItem: Item, IAttackable
     {
         public int atk;
 
@@ -40,11 +20,6 @@ namespace Sparta
         public int Attack()
         {
             return atk;
-        }
-
-        public void Equip()
-        {
-            this.equipped = !this.equipped;
         }
     }
 }

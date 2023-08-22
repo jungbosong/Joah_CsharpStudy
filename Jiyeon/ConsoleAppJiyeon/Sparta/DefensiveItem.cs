@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sparta
 {
-    public class DefensiveItem: Item, IDefensible, IEquipable
+    public class DefensiveItem: Item, IDefensible
     {
         public int def;
 
@@ -20,11 +20,6 @@ namespace Sparta
         public int Defense()
         {
             return def;
-        }
-
-        public void Equip()
-        {
-            this.equipped = !this.equipped;
         }
     }
 }

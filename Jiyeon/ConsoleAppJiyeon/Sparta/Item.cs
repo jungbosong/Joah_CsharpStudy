@@ -6,7 +6,26 @@ using System.Threading.Tasks;
 
 namespace Sparta
 {
-    public abstract class Item
+    public interface IItem
+    {
+        //public Item MakeItem(string name, string explanation, int atk, int def);
+    }
+
+    public interface IEquipable : IItem
+    {
+        public void Equip();
+    }
+
+    public interface IAttackable
+    {
+        public int Attack();
+    }
+
+    public interface IDefensible
+    {
+        public int Defense();
+    }
+    public abstract class Item: IEquipable
     {
         public string name;
         public string explanation;
