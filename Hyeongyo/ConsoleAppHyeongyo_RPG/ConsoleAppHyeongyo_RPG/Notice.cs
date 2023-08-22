@@ -7,18 +7,29 @@ using System.Threading.Tasks;
 
 namespace ConsoleAppHyeongyo_RPG
 {
+    // 출력에 관련된 메서드
     public class Notice
     {
-        public int equipAtk = 0;
-        public int equipDef = 0;
-
-        // 단순 출력 메서드
+        //// 단순 출력 메서드
+        // 오류 출력 메서드
+        public void warning() 
+        { 
+            Console.WriteLine("잘못된 입력입니다.");
+        }
+        // 숫자 대기 출력 메서드
+        public void next()
+        {
+            Console.WriteLine();
+            Console.WriteLine("원하시는 행동을 입력해주세요.");
+        }
+        // 시작화면 출력 메서드
         public void start()
         {
             Console.WriteLine("스파르타 마을에 오신 여러분 환영합니다.");
             Console.WriteLine("이곳에서 던전으로 들어가기 전 활동을 할 수 있습니다.");
             Console.WriteLine();
         }
+        // 상태 확인 화면 출력 메서드
         public void status()
         {
             Console.WriteLine("상태 보기");
@@ -26,17 +37,18 @@ namespace ConsoleAppHyeongyo_RPG
             Console.WriteLine();
             Console.WriteLine("Lv. " + Program.player.Level);
             Console.WriteLine($"{Program.player.Name} ( {Program.player.Job} )");
-            if ( equipAtk != 0 )
+            // 플레이어의 장착공격력과 장착방어력을 확인해서 그에 따른 결과값 출력
+            if ( Program.player.EquipAtk != 0 )
             {
-                Console.WriteLine($"공격력 : {Program.player.Atk + equipAtk} (+{equipAtk})");
+                Console.WriteLine($"공격력 : {Program.player.Atk + Program.player.EquipAtk} (+{Program.player.EquipAtk})");
             }
             else
             {
                 Console.WriteLine("공격력 : " + Program.player.Atk);
             }
-            if (equipDef != 0)
+            if (Program.player.EquipDef != 0)
             {
-                Console.WriteLine($"방어력 : {Program.player.Def + equipDef} (+{equipDef})");
+                Console.WriteLine($"방어력 : {Program.player.Def + Program.player.EquipDef} (+{Program.player.EquipDef})");
             }
             else
             {
@@ -46,12 +58,14 @@ namespace ConsoleAppHyeongyo_RPG
             Console.WriteLine("Gold : " + Program.player.Gold);
             Console.WriteLine();
         }
+        // 인벤토리 화면 출력 메서드
         public void inventory()
         {
             Console.WriteLine("인벤토리");
             Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
             Console.WriteLine();
             Console.WriteLine("[아이템 목록]");
+            // 아이템 리스트의 크기만큼 반복문을 돌려서 조건값에 따라 출력을 조정
             for (int i = 0; i < Program.items.Count; i++)
             {
                 if (Program.items[i].Placed == Items.Placed.Inventory)
@@ -83,6 +97,7 @@ namespace ConsoleAppHyeongyo_RPG
             }
             Console.WriteLine();
         }
+        // 장착 관리 화면 출력 메서드
         public void equipManage()
         {
             Console.WriteLine("인벤토리 - 장착관리");

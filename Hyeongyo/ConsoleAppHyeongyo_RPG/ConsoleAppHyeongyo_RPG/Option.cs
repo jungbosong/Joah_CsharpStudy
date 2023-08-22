@@ -6,19 +6,27 @@ using System.Threading.Tasks;
 
 namespace ConsoleAppHyeongyo_RPG
 {
+    // 선택지와 관련된 클래스를 별도로 만듬
     public class Option
     {
+        // 선택지 열거형
         public enum Action { Start, Status, Inventory, EquipManage}
 
+        // 출력 클래스 호출
         Notice notice = new Notice();
-        // 입력받는 리스트
+
+        // 선택지 입력받는 리스트
         List<string> optionList = new List<string>();
 
-        // 입력받는 전체 메서드
+        // 선택지 전체 메서드
         public void option(Action action)
         {
+            // 콘솔창과 선택지 리스트 초기화
             Console.Clear();
             optionList.Clear();
+
+            // option()의 매개변수를 비교하여 조건에 맞는 메서드 실행
+            // 메서드 실행시 출력 클래스에서 가져온 메서드 실행후 선택지 리스트에 선택지를 추가
             switch (action)
             {
                 case Action.Start:
@@ -35,6 +43,7 @@ namespace ConsoleAppHyeongyo_RPG
                     optionList.Add("장착 관리");
                     optionList.Add("시작화면으로");
                     break;
+                // 장비 관리 화면은 프로그램 클래스에서 아이템 정보 세팅한 정보를 가져옴
                 case Action.EquipManage:
                     notice.equipManage();
                     for (int i = 0; i < Program.items.Count; i++)
@@ -66,17 +75,19 @@ namespace ConsoleAppHyeongyo_RPG
                     break;
             }
 
+            // 선택지 출력
             for (int i = 0; i < optionList.Count; i++)
             {
                 Console.WriteLine($"{i + 1}. {optionList[i]}");
             }
+            // 숫자 대기 메서드 실행
             next(1, optionList.Count);
         }
 
+        // 숫자 대기 메서드
         public void next(int min, int max)
         {
-            Console.WriteLine();
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            notice.next();
             int a = CheckValidInput(min, max);
             if (optionList[a - 1].Contains("-"))
             {
@@ -84,11 +95,11 @@ namespace ConsoleAppHyeongyo_RPG
                 {
                     if (Program.items[a - 1] is Items.Weapon)
                     {
-                        notice.equipAtk -= Program.items[a - 1].Atk;
+                        Program.player.EquipAtk -= Program.items[a - 1].Atk;
                     }
                     else if (Program.items[a - 1] is Items.Armor)
                     {
-                        notice.equipDef -= Program.items[a - 1].Def;
+                        Program.player.EquipDef -= Program.items[a - 1].Def;
                     }
                     Program.items[a - 1].IsEquip = false;
                     option(Action.EquipManage);
@@ -97,11 +108,11 @@ namespace ConsoleAppHyeongyo_RPG
                 {
                     if (Program.items[a - 1] is Items.Weapon)
                     {
-                        notice.equipAtk += Program.items[a - 1].Atk;
+                        Program.player.EquipAtk += Program.items[a - 1].Atk;
                     }
                     else if (Program.items[a - 1] is Items.Armor)
                     {
-                        notice.equipDef += Program.items[a - 1].Def;
+                        Program.player.EquipDef += Program.items[a - 1].Def;
                     }
                     Program.items[a - 1].IsEquip = true;
                     option(Action.EquipManage);
@@ -126,7 +137,7 @@ namespace ConsoleAppHyeongyo_RPG
                 }
             }
         }
-        // 숫자 체크
+        // 숫자 체크 메서드
         static int CheckValidInput(int min, int max)
         {
             while (true)

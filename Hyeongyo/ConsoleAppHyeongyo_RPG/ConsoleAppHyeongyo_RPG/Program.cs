@@ -30,8 +30,9 @@
 
         static void Main(string[] args)
         {
+            // 세팅 시작
             GameDataSetting();
-
+            // 시작 선택지 실행
             option.option(Option.Action.Start);
         }
     }
