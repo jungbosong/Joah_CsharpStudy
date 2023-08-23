@@ -8,7 +8,7 @@ namespace Sparta
 {
     public interface IItem
     {
-        //public Item MakeItem(string name, string explanation, int atk, int def);
+        public void Init(string name, string explanation, int effect);
     }
 
     public interface IEquipable : IItem
@@ -25,13 +25,28 @@ namespace Sparta
     {
         public int Defense();
     }
-    public abstract class Item: IEquipable
+
+    public enum ItemType
+    {
+        NONE,
+        AttackItem,
+        DefensiveItem,
+    }
+
+    public class Item: IItem, IEquipable
     {
         public string name;
         public string explanation;
         public bool equipped = false;
+        public int effect;
+        public int type = (int)ItemType.NONE; // 공격 아이템
 
-        public abstract void Init(string name, string explanation, int effect);
+        public virtual void Init(string name, string explanation, int effect)
+        {
+            this.name = name;
+            this.explanation = explanation;
+            this.effect = effect;
+        }
 
         public void Equip()
         {

@@ -58,13 +58,13 @@ namespace Sparta
             {
                 if (item.equipped)
                 {
-                    increasedAtk += item.atk;
+                    increasedAtk += item.effect;
                     atk += increasedAtk;
                 }
-                else if(increasedAtk >= item.atk)
+                else if(increasedAtk >= item.effect)
                 {
                     atk -= increasedAtk;
-                    increasedAtk -= item.atk;
+                    increasedAtk -= item.effect;
                 }
             }            
         }
@@ -75,13 +75,13 @@ namespace Sparta
             {
                 if (item.equipped)
                 {
-                    increasedDef += item.def;
+                    increasedDef += item.effect;
                     def += increasedDef;
                 }
-                else if(increasedDef >= item.def)
+                else if(increasedDef >= item.effect)
                 {
                     def -= increasedDef;
-                    increasedDef -= item.def;
+                    increasedDef -= item.effect;
                 }
             }
         }

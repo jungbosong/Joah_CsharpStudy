@@ -8,18 +8,16 @@ namespace Sparta
 {
     public class AttackItem: Item, IAttackable
     {
-        public int atk;
-
-        public override void Init(string name, string explanation, int atk)
+        public override void Init(string name, string explanation, int effect)
         {
             this.name = name;
             this.explanation = explanation;
-            this.atk = atk;
+            this.effect = effect;
+            type = (int)ItemType.AttackItem;
         }
-
         public int Attack()
         {
-            return atk;
+            return effect;
         }
     }
 }

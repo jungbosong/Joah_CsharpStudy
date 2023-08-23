@@ -86,8 +86,8 @@ namespace Sparta
             Console.WriteLine();
             Console.ResetColor();
 
-            SetAction($"1. {MsgDefine.MANAGE_EQUIP}\n0. {MsgDefine.OUT}");           
-            int input = CheckValidInput(0, 1);
+            SetAction($"1. {MsgDefine.MANAGE_EQUIP}2. {MsgDefine.SORT_ITEM}0. {MsgDefine.OUT}");           
+            int input = CheckValidInput(0, 2);
             switch (input)
             {
                 case 0:
@@ -95,6 +95,9 @@ namespace Sparta
                     break;
                 case 1:
                     DisplayManageEquipment();
+                    break;
+                case 2:
+                    DisplaySortItem();
                     break;
             }
         }
@@ -124,6 +127,41 @@ namespace Sparta
             {
                 player.EquipItem(input);
                 DisplayManageEquipment();
+            }
+        }
+
+        public void DisplaySortItem()
+        {
+            SetTitle($"{MsgDefine.INVENTORY} - {MsgDefine.SORT_ITEM}");
+            Console.Write(MsgDefine.EXPLAN_INVENTORY);
+            Console.WriteLine();
+
+            SetItemList();
+            WriteItemList();
+
+            SetAction($"1. {MsgDefine.NAME}2. {MsgDefine.EQUIPPED}3. {MsgDefine.OFFENSIVE_POWER}\n4.{MsgDefine.DEFENSIVE_POWER}\n0. {MsgDefine.OUT}");
+            int input = CheckValidInput(0, 4);
+            switch (input)
+            {
+                case 0:
+                    DisplayStartGame();
+                    break;
+                case 1:
+                    SortItemList(MsgDefine.NAME);
+                    DisplaySortItem();
+                    break;
+                case 2:
+                    SortItemList(MsgDefine.EQUIPPED);
+                    DisplaySortItem();
+                    break;
+                case 3:
+                    SortItemList(MsgDefine.OFFENSIVE_POWER);
+                    DisplaySortItem();
+                    break;
+                case 4:
+                    SortItemList(MsgDefine.DEFENSIVE_POWER);
+                    DisplaySortItem();
+                    break;
             }
         }
 
@@ -184,27 +222,23 @@ namespace Sparta
             itemList.Clear();
             itemList.Add($"{MsgDefine.LIST_ITEM}\n");
 
-            foreach (DefensiveItem item in player.inventory.defensiveItems)
+            foreach (Item item in player.inventory.items)
             {
                 string tmp = "";
                 if (item.equipped)
                 {
                     tmp += MsgDefine.EQUIP;
                 }
-
-                tmp += string.Format("{0,-15}|{1,-10} +{2}|{3,-30}\n", item.name, MsgDefine.DEFENSIVE_POWER, item.def, item.explanation);
+                if(item.type == (int)ItemType.DefensiveItem)
+                {
+                    tmp += string.Format("{0,-15}|{1,-10} +{2}|{3,-30}\n", item.name, MsgDefine.DEFENSIVE_POWER, item.effect, item.explanation);
+                }
+                else
+                {
+                    tmp += string.Format("{0,-15}|{1,-10} +{2}|{3,-30}\n", item.name, MsgDefine.OFFENSIVE_POWER, item.effect, item.explanation);
+                }
                 
-                itemList.Add(tmp);
-            }
-
-            foreach (AttackItem item in player.inventory.attackItems)
-            {
-                string tmp = "";
-                if (item.equipped)
-                {
-                    tmp += MsgDefine.EQUIP;
-                }
-                tmp += string.Format("{0,-15}|{1,-10} +{2}|{3,-30}\n", item.name, MsgDefine.OFFENSIVE_POWER, item.atk, item.explanation);
+                
                 itemList.Add(tmp);
             }
         }
@@ -222,7 +256,7 @@ namespace Sparta
                 {
                     tmp += MsgDefine.EQUIP;
                 }
-                tmp += $"{item.name}  | {MsgDefine.DEFENSIVE_POWER} +{item.def} | {item.explanation}\n";
+                tmp += $"{item.name}  | {MsgDefine.DEFENSIVE_POWER} +{item.effect} | {item.explanation}\n";
 
                 storeItemList.Add(tmp);
             }
@@ -234,7 +268,7 @@ namespace Sparta
                 {
                     tmp += MsgDefine.EQUIP;
                 }
-                tmp += $"{item.name}  | {MsgDefine.OFFENSIVE_POWER} +{item.atk} | {item.explanation}\n";
+                tmp += $"{item.name}  | {MsgDefine.OFFENSIVE_POWER} +{item.effect} | {item.explanation}\n";
 
                 storeItemList.Add(tmp);
             }
@@ -296,6 +330,16 @@ namespace Sparta
             Console.Write(MsgDefine.INPUT_ACTION);
         }
 
+        public void WriteItemList()
+        {
+            Console.Write(itemList[0]);
+            for (int i = 1; i < itemList.Count; i++)
+            {
+                Console.Write($"- {itemList[i]}");
+            }
+            Console.WriteLine();
+        }
+
         // 0, 1, 2
         public int CheckValidInput(int min, int max)
         {
@@ -311,6 +355,25 @@ namespace Sparta
                 }
 
                 WriteWrongInput();
+            }
+        }
+
+        public void SortItemList(string sortBy)
+        {
+            switch(sortBy)
+            {
+                case MsgDefine.NAME:
+                    Inventory.Instance().items = Inventory.Instance().items.OrderByDescending(item => item.name.Replace(" ", string.Empty).Length).ToList();
+                    break;
+                case MsgDefine.EQUIPPED:
+                    Inventory.Instance().items = Inventory.Instance().items.OrderBy(item => item.equipped).ToList();
+                    break;
+                case MsgDefine.OFFENSIVE_POWER:
+                    Inventory.Instance().items = Inventory.Instance().items.OrderBy(item => item.type).ToList();
+                    break;
+                case MsgDefine.DEFENSIVE_POWER:
+                    Inventory.Instance().items = Inventory.Instance().items.OrderByDescending(item => item.type).ToList();
+                    break;
             }
         }
     }

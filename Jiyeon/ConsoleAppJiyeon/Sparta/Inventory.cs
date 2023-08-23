@@ -18,7 +18,7 @@ namespace Sparta
             }
             return _instance;
         }
-
+        public List<Item> items = new List<Item>();
         public List<AttackItem> attackItems = new List<AttackItem>();
         public List<DefensiveItem> defensiveItems = new List<DefensiveItem>();
         public int itemCount;
@@ -41,11 +41,13 @@ namespace Sparta
         public void AddAttackItem(AttackItem item)
         {
             attackItems.Add(item);
+            items.Add(item);
         }
 
         public void AddDefensiveItem(DefensiveItem item)
         {
             defensiveItems.Add(item);
+            items.Add(item);
         }
 
         public void DeleteIAttackItem(int idx)
