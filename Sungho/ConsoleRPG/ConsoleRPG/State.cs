@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleAppHyeongyo_RPG
+namespace ConsoleRPG
 {
-    public class Inventory
-    {
+	public class State : Player
+	{
+		public State(string Name, string chad) : base(Name, chad) { }
 
-    }
+	}
 }

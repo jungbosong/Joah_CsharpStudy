@@ -1,194 +1,27 @@
 ﻿using System.Reflection.Emit;
 using System;
+using System.Runtime.Serialization;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ConsoleRPG
 {
-	// 혹시 몰라서 interface로 구현, 바로 클래스로 구현 가능
-	public interface Character
-	{
-		int Level { get; set; }
-		string Name { get; }
-		string chad { get; }
-		int AttackPower { get; set; }
-		int DefensivePower { get; set; }
-		int Health { get; set; }
-		int Gold { get; set; }
-	}
-
-	public class Player : Character
-	{
-		public int Level { get; set; }
-		public string Name { get; }
-		public string chad { get; }
-		public int AttackPower { get; set; }
-		public int DefensivePower { get; set; }
-		public int Health { get; set; }
-		public int Gold { get; set; }
-
-		public Player(string Name, string chad)
-		{
-			Level = 01;
-			this.Name = Name;
-			this.chad = chad;
-			AttackPower = 10;
-			DefensivePower = 5;
-			Health = 100;
-			Gold = 1500;
-		}
-
-	}
-	public class State : Player
-	{
-		public State(string Name, string chad) : base(Name, chad) { }
-
-	}
-
-	public interface Item
-	{
-		string Name { get; set; }
-		int DefensivePower { get; set; }
-
-		int AttackPower { get; set; }
-		string Information { get; set; }
-		int Price { get; set; }
-		bool I_Exist { get; set; }
-		bool equipped { get; set; }
-		string Sign { get; set; }
-	}
-
-	public class IronArmor : Item
-	{
-		public string Name { get; set; }
-		public int DefensivePower { get; set; }
-		public string Information { get; set; }
-		public int AttackPower { get; set; }
-		public int Price { get; set; }
-		public bool I_Exist { get; set; }
-		public bool equipped { get; set; }
-		public string Sign { get; set; }
-		public IronArmor(string Name, int DefensivePower, string Information) 
-		{ 
-			this.Name = Name;
-			this.DefensivePower = DefensivePower;
-			this.Information = Information;
-			AttackPower = 0;
-			Price = 600;
-			I_Exist = true;
-			equipped = false;
-			Sign = "";
-		}
-	}
-
-	public class IronRing : Item
-	{
-		public string Name { get; set; }
-		public int DefensivePower { get; set; }
-		public string Information { get; set; }
-		public int AttackPower { get; set; }
-		public int Price { get; set; }
-		public bool I_Exist { get; set; }
-		public bool equipped { get; set; }
-		public string Sign { get; set; }
-
-
-
-
-		public IronRing(string Name, int DefensivePower, string Information)
-		{
-			this.Name = Name;
-			this.DefensivePower = DefensivePower;
-			this.Information = Information;
-			AttackPower = 0;
-			Price = 400;
-			I_Exist = false;
-			equipped = false;
-			Sign = "";
-		}
-	}
-
-	public class OldSword : Item
-	{
-		public string Name { get; set; }
-		public int DefensivePower { get; set; }
-		public string Information { get; set; }
-		public int AttackPower { get; set; }
-		public int Price { get; set; }
-		public bool I_Exist { get; set; }
-		public bool equipped { get; set; }
-		public string Sign { get; set; }
-
-		public OldSword(string Name, int AttackPower, string Information)
-		{
-			this.Name = Name;
-			this.AttackPower = AttackPower;
-			this.Information = Information;
-			DefensivePower = 0;
-			Price = 200;
-			I_Exist = true;
-			equipped = false;
-			Sign = "";
-		}
-	}
-	public class Sword : Item
-	{
-		public string Name { get; set; }
-		public int DefensivePower { get; set; }
-		public string Information { get; set; }
-		public int AttackPower { get; set; }
-		public int Price { get; set; }
-		public bool I_Exist { get; set; }
-		public bool equipped { get; set; }
-		public string Sign { get; set; }
-
-		public Sword(string Name, int AttackPower, string Information)
-		{
-			this.Name = Name;
-			this.AttackPower = AttackPower;
-			this.Information = Information;
-			DefensivePower = 0;
-			Price = 800;
-			I_Exist = false;
-			equipped = false;
-			Sign = "";
-		}
-	}
-
-	public class GoldSword : Item
-	{
-		public string Name { get; set; }
-		public int DefensivePower { get; set; }
-		public string Information { get; set; }
-		public int AttackPower { get; set; }
-		public int Price { get; set; }
-		public bool I_Exist { get; set; }
-		public bool equipped { get; set; }
-		public string Sign { get; set; }
-
-		public GoldSword(string Name, int AttackPower, string Information)
-		{
-			this.Name = Name;
-			this.AttackPower = AttackPower;
-			this.Information = Information;
-			DefensivePower = 0;
-			Price = 1300;
-			I_Exist = false;
-			equipped = false;
-			Sign = "";
-		}
-	}
-
 	public class Start
 	{
+		bool En_Suc; //강화 성공
+		bool En_Fail; //강화 실패
+		bool rest; // 휴식 판별
+		bool purchase; // 구매 판별
 		bool atk = false;
 		bool def = false;
-		Item AtkItem = null;
-		Item DefItem = null;
+		Item ?AtkItem = null;
+		Item ?DefItem = null;
 		int AttackUP = 0;
 		int DefensiveUP = 0;
-		private Character player;
-		private List<Item> items;
-		private List<Item> store_Items;
-		public Start(Player player, List<Item>items, List<Item>store_Items)
+		public Character player;
+		public List<Item> items;
+		public List<Item> store_Items;
+
+		public Start(Character player, List<Item> items, List<Item> store_Items)
 		{
 			this.player = player;
 			this.items = items;
@@ -208,23 +41,447 @@ namespace ConsoleRPG
 			Console.WriteLine("2. 인벤토리");
 			Console.ResetColor();
 			Console.WriteLine("3. 상점");
+			Console.WriteLine("4. 던전입장");
+			Console.WriteLine("5. 휴식하기");
+			Console.WriteLine("6. 강화하기");
 			Console.WriteLine();
 
 			Console.WriteLine("원하시는 행동을 입력해주세요.");
 			Console.Write(">>");
-		
-			while (true) {
-				string ?input = Console.ReadLine();
+
+			while (true)
+			{
+				string? input = Console.ReadLine();
 				switch (input)
 				{
 					case "1": StateOn(); break;
 					case "2": InventoryOn(); break;
 					case "3": Store(); break;
+					case "4": Dungeon(); break;
+					case "5": RestOn(); break;
+					case "6": EnhanceOn(); break;
 					default: Console.WriteLine("잘못된 입력입니다"); break;
 				}
 			}
 		}
 
+		public void EnhanceOn()
+		{
+			bool[]storeItem_chk = new bool[5];
+			Console.Clear();
+			Console.WriteLine("강화하기");
+			Console.WriteLine("무기를 강화하는 곳입니다.");
+			Console.WriteLine();
+			Console.WriteLine("[아이템 목록]");
+			Console.WriteLine("강화할 무기를 선택하세요.");
+			Console.WriteLine();
+			for (int i = 0; i < items.Count; i++)
+			{
+				storeItem_chk[i] = true;
+				if (items[i].DefensivePower == 0)
+				{
+					Console.WriteLine($"- {i + 1} {items[i].Name,-6}  | 공격력 +{items[i].AttackPower} | {items[i].Information,-10}");
+				}
+				else if (items[i].AttackPower == 0)
+				{
+					Console.WriteLine($"- {i + 1} {items[i].Name,-6}  | 방어력 +{items[i].DefensivePower} | {items[i].Information,-10}");
+				}
+			}
+			Console.WriteLine();
+			Console.WriteLine("0. 나가기");
+			Console.WriteLine();
+			Console.WriteLine("원하시는 행동을 입력해주세요.");
+			Console.Write(">>");
+			while (true)
+			{
+				string? input = Console.ReadLine();
+				switch (input)
+				{
+					case "1": Enhance(items[0]); break;
+					case "2": Enhance(items[1]); break;
+					case "3": Store(); break;
+					case "4": Dungeon(); break;
+					case "5": RestOn(); break;
+					case "0": GameStart(); break;
+					default: Console.WriteLine("잘못된 입력입니다"); break;
+				}
+			}
+		}
+
+		public void Enhance(Item E_Item)
+		{
+			int EnhanceCost = 200 * (E_Item.EnhanceNum + 1) + (20 * E_Item.EnhanceNum);
+			Random EnhanceChance = new Random();
+			int enNum = EnhanceChance.Next(1, 101);
+			int E_Chance = (E_Item.EnhanceNum * 10) + (E_Item.EnhanceNum * 5);
+			Console.Clear();
+			Console.WriteLine("강화하기");
+			Console.WriteLine("무기를 강화하는 곳입니다.");
+			Console.WriteLine();
+			Console.WriteLine("[현재 선택된 아이템]");
+			if (E_Item.AttackPower > 0)
+			{
+				Console.WriteLine($"이름 : {E_Item.Name}");
+				Console.WriteLine($"공격력: { E_Item.AttackPower}");		
+			}
+			else
+			{
+				Console.WriteLine($"이름 : {E_Item.Name}");
+				Console.WriteLine($"방어력 : {E_Item.DefensivePower}");
+			}
+			Console.WriteLine();
+			Console.WriteLine($"강화수치 : + {E_Item.EnhanceNum}     |     보유 골드 : {player.Gold} G");
+			Console.WriteLine();
+			Console.WriteLine();
+			Console.WriteLine($"1회 강회 비용: {EnhanceCost} G     |     강화 확률 : {100 - E_Chance} %");
+			Console.WriteLine();
+			if (En_Suc) Console.WriteLine("강화를 성공하였습니다!");
+			if (En_Fail) Console.WriteLine("강화를 실패하였습니다..");
+			Console.WriteLine();
+			Console.WriteLine("1. 강화하기");
+			Console.WriteLine("0. 나가기");
+			Console.WriteLine();
+			Console.WriteLine("원하시는 행동을 입력해주세요.");
+			Console.Write(">>");
+			En_Suc = false;
+			En_Fail = false;
+			while (true)
+			{
+				string? input = Console.ReadLine();
+				switch (input)
+				{
+					case "1": 
+						if(player.Gold > EnhanceCost)
+						{
+							player.Gold -= EnhanceCost;
+							if (E_Chance < enNum)
+							{
+								if (E_Item.AttackPower > 0)
+								{
+									E_Item.EnhanceNum += 1;
+									E_Item.AttackPower += 1 * E_Item.EnhanceNum + 1;
+									En_Suc = true;
+									Enhance(E_Item);
+								}
+								else
+								{
+									E_Item.EnhanceNum += 1;
+									E_Item.DefensivePower += 1 * E_Item.EnhanceNum + 1;
+									En_Suc = true;
+									Enhance(E_Item);
+								}
+							}
+							else
+							{
+								if (E_Item.EnhanceNum >= 3)
+								{
+									E_Item.EnhanceNum -= 1;
+								}
+								En_Fail = true;
+								Enhance(E_Item);
+							}
+						}
+						else
+						{
+							Console.WriteLine("소지금이 부족합니다!");
+						}
+						 break;
+					case "0": EnhanceOn(); break;
+				
+					default: Console.WriteLine("잘못된 입력입니다"); break;
+				}
+			}
+		}
+		public void RestOn()
+		{
+			Console.Clear();
+			Console.WriteLine("휴식하기");
+			Console.WriteLine($"500 G 를 내면 체력을 회복할 수 있습니다.    보유골드 : {player.Gold} G");
+			Console.WriteLine();
+			Console.WriteLine("1. 휴식하기");
+			Console.WriteLine("0. 나가기");
+			Console.WriteLine();
+			if (rest) Console.WriteLine("휴식을 완료했습니다."); Console.WriteLine();
+			Console.WriteLine("원하시는 행동을 입력해주세요.");
+			Console.Write(">>");
+
+			rest = false;
+
+			while (true)
+			{
+				string? input = Console.ReadLine();
+				switch (input)
+				{
+					case "1":
+						if (player.Gold >= 500)
+						{
+							player.Gold -= 500;
+							player.Health = 100;
+							rest = true;
+							RestOn();
+						}
+						else
+						{
+							Console.WriteLine("Gold 가 부족합니다.");
+						}
+						break;
+
+					case "0": GameStart(); break;
+
+					default: Console.WriteLine("잘못된 입력입니다"); break;
+				}
+			}
+		}
+
+		public void Dungeon()
+		{
+			Console.Clear();
+			Console.WriteLine("던전입장");
+			Console.WriteLine("이곳에서 던전으로 들어가기전 활동을 할 수 있습니다.");
+			Console.WriteLine();
+			Console.WriteLine("1. 쉬운 던전     | 방어력 5 이상 권장");
+			Console.WriteLine("2. 일반 던전     | 방어력 11 이상 권장");
+			Console.WriteLine("3. 어려운 던전    | 방어력 17 이상 권장");
+			Console.WriteLine("0. 나가기");
+			Console.WriteLine();
+			Console.WriteLine("원하시는 행동을 입력해주세요.");
+			Console.Write(">>");
+			while (true)
+			{
+				string? input = Console.ReadLine();
+				switch (input)
+				{
+					case "1": EasyStage(); break;
+					case "2": NormalStage(); break;
+					case "3": HardStage(); break;
+					case "0": GameStart(); break;
+					default: Console.WriteLine("잘못된 입력입니다"); break;
+				}
+			}
+		}
+		public void EasyStage()
+		{
+			Random ClearRan = new Random();
+			Random DownHpRan = new Random();
+			Random GoldRan = new Random();
+			int GoldAtk = GoldRan.Next((int)player.AttackPower, (int)(player.AttackPower * 2) + 1);
+			int clearChk = ClearRan.Next(1, 11);
+			int DownHp = DownHpRan.Next(20, 36);
+			int PreviousHP = (int)player.Health;
+			int PreviousGold = player.Gold;
+
+			if (player.DefensivePower < 5)
+			{
+				if (clearChk <= 4)
+				{
+					player.Health -= PreviousHP / 2;
+					if (player.Health < 0)
+					{
+						player.PlayerDead();
+					}
+					else
+					{ 		
+						StageFail(PreviousHP, "쉬움");
+					}
+				}
+				else
+				{
+					int extraGold = 10 * GoldAtk; // 1000/100 = 10
+					player.Gold += 1000 + extraGold;
+					player.Health -= DownHp + (5 - player.DefensivePower);
+					if (player.Health > 0)
+					{
+						player.PlayerDead();
+					}
+					else
+					{
+						StageClear(PreviousHP, PreviousGold, "쉬움");
+					}
+				}
+			}
+			else
+			{
+				int extraGold = 10 * GoldAtk;
+				player.Gold += 1000 + extraGold;
+				player.Health -= DownHp - (player.DefensivePower - 5);
+				if (player.Health < 0)
+				{
+					player.PlayerDead();
+				}
+				else
+				{
+					StageClear(PreviousHP, PreviousGold, "쉬움");
+				}
+			}
+		}
+
+		public void NormalStage()
+		{
+			Random ClearRan = new Random();
+			Random DownHpRan = new Random();
+			Random GoldRan = new Random();
+			int GoldAtk = GoldRan.Next((int)player.AttackPower, (int)(player.AttackPower * 2) + 1);
+			int clearChk = ClearRan.Next(1, 11);
+			int DownHp = DownHpRan.Next(20, 36);
+			int PreviousHP = (int)player.Health;
+			int PreviousGold = player.Gold;
+
+			if (player.DefensivePower < 11)
+			{
+				if (clearChk <= 4)
+				{
+					player.Health -= PreviousHP / 2;
+					if (player.Health < 0)
+					{
+						player.PlayerDead();
+					}
+					else
+					{
+						StageFail(PreviousHP, "일반");
+					}
+				}
+				else
+				{
+					int extraGold = 17 * GoldAtk; // 1700/100 = 10
+					player.Gold += 1700 + extraGold;
+					player.Health -= DownHp + (11 - player.DefensivePower);
+					if (player.Health < 0)
+					{
+						player.PlayerDead();
+					}
+					else
+					{
+						StageClear(PreviousHP, PreviousGold, "일반");
+					}
+				}
+			}
+			else
+			{
+				int extraGold = 17 * GoldAtk;
+				player.Gold += 1700 + extraGold;
+				player.Health -= DownHp - (player.DefensivePower - 11);
+				if (player.Health < 0)
+				{
+					player.PlayerDead();
+				}
+				else
+				{
+					StageClear(PreviousHP, PreviousGold, "일반");
+				}
+			}
+		}
+
+		public void HardStage()
+		{
+			Random ClearRan = new Random();
+			Random DownHpRan = new Random();
+			Random GoldRan = new Random();
+			int GoldAtk = GoldRan.Next((int)player.AttackPower, (int)(player.AttackPower * 2) + 1);
+			int clearChk = ClearRan.Next(1, 11);
+			int DownHp = DownHpRan.Next(20, 36);
+			int PreviousHP = (int)player.Health;
+			int PreviousGold = player.Gold;
+
+			if (player.DefensivePower < 17)
+			{
+				if (clearChk <= 4)
+				{
+
+					player.Health -= PreviousHP / 2;
+					if (player.Health < 0)
+					{
+						player.PlayerDead();
+					}
+					else
+					{
+						StageFail(PreviousHP, "어려움");
+					}
+				}
+				else
+				{
+					int extraGold = 25 * GoldAtk; // 2500/100 = 10
+					player.Gold += 2500 + extraGold;
+					player.Health -= DownHp + (17 - player.DefensivePower);
+					if (player.Health < 0)
+					{
+						player.PlayerDead();
+					}
+					else
+					{
+						StageClear(PreviousHP, PreviousGold, "어려움");
+					}
+				}
+			}
+			else
+			{
+				int extraGold = 25 * GoldAtk;
+				player.Gold += 2500 + extraGold;
+				player.Health -= DownHp - (player.DefensivePower - 17);
+				if (player.Health < 0)
+				{
+					player.PlayerDead();
+				}
+				else
+				{
+					StageClear(PreviousHP, PreviousGold, "어려움");
+				}
+			}
+		}
+
+		public void StageClear(int PrevHP, int PrevGold, string StageLevel)
+		{
+			player.Level += 1;
+			player.AttackPower += 0.5f;
+			player.DefensivePower += 1.0f;
+			Console.Clear();
+			Console.WriteLine("던전 클리어");
+			Console.WriteLine("축하합니다!!");
+			Console.WriteLine($"{StageLevel} 던전을 클리어 하였습니다.");
+			Console.WriteLine();
+			Console.WriteLine("[탐험 결과]");
+			Console.WriteLine($"체력 {PrevHP} -> {player.Health}");
+			Console.WriteLine($"Gold {PrevGold} G -> {player.Gold} G");
+			Console.WriteLine();
+			Console.WriteLine("0. 나가기");
+			Console.WriteLine();
+			Console.WriteLine("원하시는 행동을 입력해주세요.");
+			Console.Write(">>");
+			while (true)
+			{
+				string? input = Console.ReadLine();
+				switch (input)
+				{
+					case "0": Dungeon(); break;
+					default: Console.WriteLine("잘못된 입력입니다"); break;
+				}
+			}
+		}
+
+		public void StageFail(int PrevHP, string StageLevel)
+		{
+			Console.Clear();
+			Console.WriteLine("던전 실패");
+			Console.WriteLine($"{player.Name} 가 쓰러졌습니다..");
+			Console.WriteLine($"{StageLevel} 던전을 실패 하였습니다.");
+			Console.WriteLine();
+			Console.WriteLine("[탐험 결과]");
+			Console.WriteLine($"체력 {PrevHP} -> {player.Health}");
+			Console.WriteLine();
+			Console.WriteLine("0. 나가기");
+			Console.WriteLine();
+			Console.WriteLine("원하시는 행동을 입력해주세요.");
+			Console.Write(">>");
+
+			while (true)
+			{
+				string? input = Console.ReadLine();
+				switch (input)
+				{
+					case "0": Dungeon(); break;
+					default: Console.WriteLine("잘못된 입력입니다"); break;
+				}
+			}
+		}
 		public void Store()
 		{
 			Console.Clear();
@@ -236,7 +493,7 @@ namespace ConsoleRPG
 			Console.WriteLine();
 			Console.WriteLine("[아이템 목록]");
 
-			for(int i = 0; i < store_Items.Count; i++)
+			for (int i = 0; i < store_Items.Count; i++)
 			{
 				if (store_Items[i].DefensivePower == 0)
 				{
@@ -509,9 +766,10 @@ namespace ConsoleRPG
 			Console.WriteLine();
 			Console.WriteLine("0. 나가기");
 			Console.WriteLine();
+			if (purchase) Console.WriteLine("구매를 완료했습니다."); Console.WriteLine();
 			Console.WriteLine("원하시는 행동을 입력해주세요.");
 			Console.Write(">>");
-
+			purchase = false;
 			while (true)
 			{
 				string? input = Console.ReadLine();
@@ -525,7 +783,8 @@ namespace ConsoleRPG
 								store_Items[0].I_Exist = true;
 								player.Gold -= store_Items[0].Price;
 								items.Add(store_Items[0]);
-								StorePurchase();							
+								purchase = true;
+								StorePurchase();
 							}
 							else
 							{
@@ -545,6 +804,7 @@ namespace ConsoleRPG
 								store_Items[1].I_Exist = true;
 								player.Gold -= store_Items[1].Price;
 								items.Add(store_Items[1]);
+								purchase = true;
 								StorePurchase();
 							}
 							else
@@ -565,6 +825,7 @@ namespace ConsoleRPG
 								store_Items[2].I_Exist = true;
 								player.Gold -= store_Items[2].Price;
 								items.Add(store_Items[2]);
+								purchase = true;
 								StorePurchase();
 							}
 							else
@@ -585,6 +846,7 @@ namespace ConsoleRPG
 								store_Items[3].I_Exist = true;
 								player.Gold -= store_Items[3].Price;
 								items.Add(store_Items[3]);
+								purchase = true;
 								StorePurchase();
 							}
 							else
@@ -605,6 +867,7 @@ namespace ConsoleRPG
 								store_Items[4].I_Exist = true;
 								player.Gold -= store_Items[4].Price;
 								items.Add(store_Items[4]);
+								purchase = true;
 								StorePurchase();
 							}
 							else
@@ -623,7 +886,7 @@ namespace ConsoleRPG
 				}
 			}
 		}
-		
+
 		public void InventoryOn()
 		{
 			Console.Clear();
@@ -633,16 +896,16 @@ namespace ConsoleRPG
 			Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
 			Console.WriteLine();
 			Console.WriteLine("[아이템 목록]");
-			for(int i = 0; i < items.Count; i++)
+			for (int i = 0; i < items.Count; i++)
 			{
-	
+
 				if (items[i].DefensivePower == 0)
 				{
-					Console.WriteLine($"- {items[i].Sign}{items[i].Name, -6}  | 공격력 +{items[i].AttackPower} | {items[i].Information, -10}");
+					Console.WriteLine($"- {items[i].Sign}{items[i].Name,-6} + {items[i].EnhanceNum}  | 공격력 +{items[i].AttackPower} | {items[i].Information,-10}");
 				}
 				else
 				{
-					Console.WriteLine($"- {items[i].Sign}{items[i].Name, -6}  | 방어력 +{items[i].DefensivePower} | {items[i].Information, -10}");
+					Console.WriteLine($"- {items[i].Sign}{items[i].Name,-6} + {items[i].EnhanceNum} | 방어력 +{items[i].DefensivePower} | {items[i].Information,-10}");
 				}
 			}
 			Console.WriteLine();
@@ -653,11 +916,11 @@ namespace ConsoleRPG
 			Console.WriteLine();
 			Console.WriteLine("원하시는 행동을 입력해주세요");
 			Console.Write(">>");
-			
+
 
 			while (true)
 			{
-				string ?input = Console.ReadLine();
+				string? input = Console.ReadLine();
 				switch (input)
 				{
 					case "1": InventoryManager(); break;
@@ -684,11 +947,11 @@ namespace ConsoleRPG
 				Display[i] = true;
 				if (items[i].DefensivePower == 0)
 				{
-					Console.WriteLine($"- {i + 1} {items[i].Sign}{items[i].Name, -6}  | 공격력 +{items[i].AttackPower} | {items[i].Information, -10}");
+					Console.WriteLine($"- {i + 1} {items[i].Sign}{items[i].Name,-6}  | 공격력 +{items[i].AttackPower} | {items[i].Information,-10}");
 				}
 				else
 				{
-					Console.WriteLine($"- {i + 1} {items[i].Sign}{items[i].Name, -6}  | 방어력 +{items[i].DefensivePower} | {items[i].Information, -10}");
+					Console.WriteLine($"- {i + 1} {items[i].Sign}{items[i].Name,-6}  | 방어력 +{items[i].DefensivePower} | {items[i].Information,-10}");
 				}
 			}
 			Console.WriteLine();
@@ -696,9 +959,10 @@ namespace ConsoleRPG
 			Console.WriteLine();
 			Console.WriteLine("원하시는 행동을 입력해주세요");
 			Console.Write(">>");
-			
-			while (true) { 
-			string ?input = Console.ReadLine();
+
+			while (true)
+			{
+				string? input = Console.ReadLine();
 				switch (input)
 				{
 					case "1":
@@ -751,7 +1015,7 @@ namespace ConsoleRPG
 									InventoryManager();
 								}
 								else if (atk && AtkItem != null && AtkItem != items[0] && items[0].AttackPower > 0)
-								{									
+								{
 									AtkItem.Sign = "";
 									AtkItem.equipped = false;
 									items[0].Sign = "[E]";
@@ -764,7 +1028,7 @@ namespace ConsoleRPG
 									InventoryManager();
 								}
 								else if (def && DefItem != null && DefItem != items[0] && items[0].DefensivePower > 0)
-								{								
+								{
 									DefItem.Sign = "";
 									DefItem.equipped = false;
 									items[0].Sign = "[E]";
@@ -848,7 +1112,7 @@ namespace ConsoleRPG
 								}
 								else if (atk && AtkItem != null && AtkItem != items[1] && items[1].AttackPower > 0)
 								{
-									
+
 									AtkItem.Sign = "";
 									AtkItem.equipped = false;
 									items[1].Sign = "[E]";
@@ -862,7 +1126,7 @@ namespace ConsoleRPG
 								}
 								else if (def && DefItem != null && DefItem != items[1] && items[1].DefensivePower > 0)
 								{
-									
+
 									DefItem.Sign = "";
 									DefItem.equipped = false;
 									items[1].Sign = "[E]";
@@ -946,7 +1210,7 @@ namespace ConsoleRPG
 								}
 								else if (atk && AtkItem != null && AtkItem != items[2] && items[2].AttackPower > 0)
 								{
-									
+
 									AtkItem.Sign = "";
 									AtkItem.equipped = false;
 									items[2].Sign = "[E]";
@@ -960,7 +1224,7 @@ namespace ConsoleRPG
 								}
 								else if (def && DefItem != null && DefItem != items[2] && items[2].DefensivePower > 0)
 								{
-							
+
 									DefItem.Sign = "";
 									DefItem.equipped = false;
 									items[2].Sign = "[E]";
@@ -1249,7 +1513,7 @@ namespace ConsoleRPG
 
 			while (true)
 			{
-				string ?input = Console.ReadLine();
+				string? input = Console.ReadLine();
 				switch (input)
 				{
 					case "0": GameStart(); break;
@@ -1262,7 +1526,7 @@ namespace ConsoleRPG
 	{
 		static void Main(string[] args)
 		{
-			List<Item> store_Items = new List<Item> 
+			List<Item> store_Items = new List<Item>
 			{ new GoldSword("황금검", 8, "금으로 만들어진 검입니다."),
 			  new IronArmor("무쇠갑옷", 5, "무쇠로 만들어져 튼튼한 갑옷입니다."),
 			  new OldSword("낡은 검", 2, "쉽게 볼 수 있는 낡은 검입니다."),
@@ -1271,15 +1535,16 @@ namespace ConsoleRPG
 			};
 
 			List<Item> items = new List<Item>()
-			{ }; 
-			
+			{ };
+
 			items.Add(store_Items[1]);
 			items.Add(store_Items[2]);
 
-			Player player = new State("Sungho" , "전사");
+			Player player = new State("Sungho", "전사");
+
 			Start start = new Start(player, items, store_Items);
 
-			start.GameStart();			
+			start.GameStart();
 		}
 	}
 }
