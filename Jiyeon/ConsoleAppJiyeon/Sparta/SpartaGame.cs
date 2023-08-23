@@ -139,12 +139,12 @@ namespace Sparta
             SetItemList();
             WriteItemList();
 
-            SetAction($"1. {MsgDefine.NAME}2. {MsgDefine.EQUIPPED}3. {MsgDefine.OFFENSIVE_POWER}\n4.{MsgDefine.DEFENSIVE_POWER}\n0. {MsgDefine.OUT}");
+            SetAction($"1. {MsgDefine.NAME}2. {MsgDefine.EQUIPPED}3. {MsgDefine.OFFENSIVE_POWER}\n4. {MsgDefine.DEFENSIVE_POWER}\n0. {MsgDefine.OUT}");
             int input = CheckValidInput(0, 4);
             switch (input)
             {
                 case 0:
-                    DisplayStartGame();
+                    DisplayInventory();
                     break;
                 case 1:
                     SortItemList(MsgDefine.NAME);
@@ -366,7 +366,7 @@ namespace Sparta
                     Inventory.Instance().items = Inventory.Instance().items.OrderByDescending(item => item.name.Replace(" ", string.Empty).Length).ToList();
                     break;
                 case MsgDefine.EQUIPPED:
-                    Inventory.Instance().items = Inventory.Instance().items.OrderBy(item => item.equipped).ToList();
+                    Inventory.Instance().items = Inventory.Instance().items.OrderByDescending(item => item.equipped).ToList();
                     break;
                 case MsgDefine.OFFENSIVE_POWER:
                     Inventory.Instance().items = Inventory.Instance().items.OrderBy(item => item.type).ToList();

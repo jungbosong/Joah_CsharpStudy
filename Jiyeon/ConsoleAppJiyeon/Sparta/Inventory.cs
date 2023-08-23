@@ -25,27 +25,31 @@ namespace Sparta
 
         public void Init()
         {
-            attackItems.Clear();
-            AttackItem attackItem = new AttackItem();
-            attackItem.Init("낡은 검", "쉽게 볼 수 있는 낡은 검입니다.", 2);
-            AddAttackItem(attackItem);
-
             defensiveItems.Clear();
-            DefensiveItem defensiveItem = new DefensiveItem();
-            defensiveItem.Init("무쇠값옷", "무쇠로 만들어져 튼튼한 갑옷입니다.", 5);
-            AddDefensiveItem(defensiveItem);
+            AddDefensiveItem("무쇠값옷", "무쇠로 만들어져 튼튼한 갑옷입니다.", 9);
+            AddDefensiveItem("수련자 값옷", "수련에 도움을 주는 갑옷입니다.", 5);
+            AddDefensiveItem("스파르타의 값옷", "스파르타의 전사들이 사용했다는 전설의 갑옷입니다.", 15);
+
+            attackItems.Clear();
+            AddAttackItem("낡은 검", "쉽게 볼 수 있는 낡은 검입니다.", 2);
+            AddAttackItem("청동 도끼", "어디선가 사용됐던거 같은 도끼입니다.", 5);
+            AddAttackItem("스파르타의 창", "스파르타의 전사들이 사용했다는 전설의 창입니다.", 7);
 
             itemCount = attackItems.Count + defensiveItems.Count;
         }
 
-        public void AddAttackItem(AttackItem item)
+        public void AddAttackItem(string name, string explanation, int effect)
         {
+            AttackItem item = new AttackItem();
+            item.Init(name, explanation, effect);
             attackItems.Add(item);
             items.Add(item);
         }
 
-        public void AddDefensiveItem(DefensiveItem item)
+        public void AddDefensiveItem(string name, string explanation, int effect)
         {
+            DefensiveItem item = new DefensiveItem();
+            item.Init(name, explanation, effect);
             defensiveItems.Add(item);
             items.Add(item);
         }

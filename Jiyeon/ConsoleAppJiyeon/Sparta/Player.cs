@@ -88,14 +88,7 @@ namespace Sparta
 
         public void EquipItem(int idx)
         {
-            if(inventory.defensiveItems.Count < idx)
-            {
-                inventory.attackItems[idx - inventory.defensiveItems.Count - 1].Equip();
-            }
-            else
-            {
-                inventory.defensiveItems[idx-1].Equip();
-            }
+            inventory.items[idx-1].Equip();
         }
 
         public string JobToString()
