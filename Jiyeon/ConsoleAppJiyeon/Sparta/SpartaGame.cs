@@ -21,7 +21,10 @@ namespace Sparta
         Player player = Player.Instance();
         List<string> itemList = new List<string>();
         List<string> storeItemList = new List<string>();
-        List<string> myInfo = new List<string>();
+        public List<string> myInfo = new List<string>();
+        private const int MAX_NAME_LENGTH = 10;
+        private const int MAX_EFFECT_LENGTH = 10;
+        private const int MAX_DESCRIPTION_LENGTH = 30;
 
         public void DisplayStartGame()
         {
@@ -149,7 +152,10 @@ namespace Sparta
                     DisplayStartGame();
                     break;
                 case 1:
-                    
+                    // TODO 아이템 구매 화면으로 이동
+                    break;
+                case 2:
+                    // TODO 아이템 판매 화면으로 이동
                     break;
             }
         }
@@ -178,14 +184,15 @@ namespace Sparta
             itemList.Clear();
             itemList.Add($"{MsgDefine.LIST_ITEM}\n");
 
-            foreach(DefensiveItem item in player.inventory.defensiveItems)
+            foreach (DefensiveItem item in player.inventory.defensiveItems)
             {
                 string tmp = "";
                 if (item.equipped)
                 {
                     tmp += MsgDefine.EQUIP;
                 }
-                tmp += $"{item.name}  | {MsgDefine.DEFENSIVE_POWER} +{item.def} | {item.explanation}\n";
+
+                tmp += string.Format("{0,-15}|{1,-10} +{2}|{3,-30}\n", item.name, MsgDefine.DEFENSIVE_POWER, item.def, item.explanation);
                 
                 itemList.Add(tmp);
             }
@@ -197,11 +204,11 @@ namespace Sparta
                 {
                     tmp += MsgDefine.EQUIP;
                 }
-                tmp += $"{item.name}  | {MsgDefine.OFFENSIVE_POWER} +{item.atk} | {item.explanation}\n";
-
+                tmp += string.Format("{0,-15}|{1,-10} +{2}|{3,-30}\n", item.name, MsgDefine.OFFENSIVE_POWER, item.atk, item.explanation);
                 itemList.Add(tmp);
             }
         }
+        
         public void SetStoreItemList()
         {
             storeItemList.Clear();
@@ -289,7 +296,8 @@ namespace Sparta
             Console.Write(MsgDefine.INPUT_ACTION);
         }
 
-        int CheckValidInput(int min, int max)
+        // 0, 1, 2
+        public int CheckValidInput(int min, int max)
         {
             while (true)
             {
