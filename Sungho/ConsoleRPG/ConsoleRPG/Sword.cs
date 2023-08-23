@@ -17,11 +17,13 @@ namespace ConsoleRPG
 		public bool equipped { get; set; }
 		public string Sign { get; set; }
 		public int EnhanceNum { get; set; }
+		public int OriginAttackPower { get; }
+		public int OriginDefensivePower { get; }
 
-		public Sword(string Name, int AttackPower, string Information)
+		public Sword(string Name, string Information)
 		{
 			this.Name = Name;
-			this.AttackPower = AttackPower;
+			AttackPower = 4;
 			this.Information = Information;
 			DefensivePower = 0;
 			Price = 800;
@@ -29,6 +31,8 @@ namespace ConsoleRPG
 			equipped = false;
 			Sign = "";
 			EnhanceNum = 0;
+			OriginAttackPower = 4;
+			OriginDefensivePower = 0;
 		}
 	}
 }
