@@ -35,5 +35,9 @@ namespace Sparta
         public const string GOLD_POSSESSION = "[보유 골드]\n";
         public const string PURCHASE_ITEM = "아이템 구매\n";
         public const string SELL_ITEM = "아이템 판매\n";
+        public const string PURCHASED = "구매완료";
+        public const string NO_MORE = "이미 구매한 아이템입니다.\n";
+        public const string LACK_GOLD = "Gold가 부족합니다.\n";
+        public const string SUCCESS = "구매를 완료했습니다.\n";
     }
 }

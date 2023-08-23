@@ -8,13 +8,12 @@ namespace Sparta
 {
     public class DefensiveItem: Item, IDefensible
     {
-        public override void Init(string name, string explanation, int effect)
+        public override void Init(string name, string explanation, int effect, bool purchased, int price)
         {
-            this.name = name;
-            this.explanation = explanation;
-            this.effect = effect;
+            base.Init(name, explanation, effect, purchased, price);
             type = (int)ItemType.DefensiveItem;
         }
+
         public int Defense()
         {
             return effect;

@@ -5,7 +5,8 @@
         static void Main(string[] args)
         {
             SpartaGame spartaGame = SpartaGame.Instance();
-            Player.Instance().Init();
+            Store.Instance().Init();
+            Inventory.Instance().SetInventoryItem();
 
             spartaGame.DisplayStartGame();
         }

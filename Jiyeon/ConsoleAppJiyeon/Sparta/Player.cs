@@ -16,6 +16,12 @@ namespace Sparta
         HEALER,
         TANKER,
     }
+    public enum PurchaseType
+    {
+        NoMore,
+        Success,
+        LackGold,
+    }
 
     public class Player
     {
@@ -34,54 +40,67 @@ namespace Sparta
         public Job job = Job.WARRIOR;
         public int hp = 100;
         public int atk = 10;
-        public int increasedAtk = 0;
         public int def = 5;
+        public int increasedAtk = 0;
         public int increasedDef = 0;
         public int gold = 1500;
-        public string name;
-        public Inventory inventory = Inventory.Instance();
-
-        public void Init()
-        {
-            inventory.Init();
-        }
+        Inventory inventory = Inventory.Instance();
+        Store store = Store.Instance();
+        HashSet<string> equippedAtkItems = new HashSet<string>();
+        HashSet<string> equippedDefItems = new HashSet<string>();
 
         public void UpdateInfo()
         {
+            equippedAtkItems.Clear();
+            equippedDefItems.Clear();
+            atk = 10;
+            def = 5;
+            increasedAtk = 0;
+            increasedDef = 0;
             SetIncreasedAtk();
             SetIncreasedDef();   
         }
 
         public void SetIncreasedAtk()
         {
-            foreach(AttackItem item in inventory.attackItems)
+            foreach(Item item in inventory.items)
             {
                 if (item.equipped)
                 {
-                    increasedAtk += item.effect;
-                    atk += increasedAtk;
+                    if (item.type == (int)ItemType.AttackItem)
+                    {
+                        increasedAtk += item.effect;
+                        atk += increasedAtk;
+                        equippedAtkItems.Add(item.name);
+                    }
                 }
-                else if(increasedAtk >= item.effect)
+                else if(equippedAtkItems.Contains(item.name))
                 {
-                    atk -= increasedAtk;
+                    equippedAtkItems.Remove(item.name);
                     increasedAtk -= item.effect;
+                    atk -= increasedAtk;
                 }
             }            
         }
 
         public void SetIncreasedDef()
         {
-            foreach (DefensiveItem item in inventory.defensiveItems)
+            foreach (Item item in inventory.items)
             {
                 if (item.equipped)
                 {
-                    increasedDef += item.effect;
-                    def += increasedDef;
+                    if (item.type == (int)ItemType.DefensiveItem)
+                    {
+                        increasedDef += item.effect;
+                        def += increasedDef;
+                        equippedDefItems.Add(item.name);
+                    }
                 }
-                else if(increasedDef >= item.effect)
+                else if (equippedAtkItems.Contains(item.name))
                 {
-                    def -= increasedDef;
+                    equippedDefItems.Remove(item.name);
                     increasedDef -= item.effect;
+                    def -= increasedDef;
                 }
             }
         }
@@ -89,6 +108,29 @@ namespace Sparta
         public void EquipItem(int idx)
         {
             inventory.items[idx-1].Equip();
+        }
+        public PurchaseType Purchase(int idx)
+        {
+            if (store.items[idx].purchased)
+            {
+                return PurchaseType.NoMore;
+            }
+            else if (gold < store.items[idx].price)
+            {
+                return PurchaseType.LackGold;
+            }
+            else
+            {
+                gold -= store.items[idx].price;
+                store.items[idx].purchased = true;
+                inventory.AddItem(store.items[idx]);
+                return PurchaseType.Success;
+            }
+        }
+
+        public void Sell(int idx)
+        {
+
         }
 
         public string JobToString()

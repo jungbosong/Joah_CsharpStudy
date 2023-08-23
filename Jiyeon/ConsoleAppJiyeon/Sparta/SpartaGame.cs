@@ -118,7 +118,7 @@ namespace Sparta
             Console.ResetColor();
 
             SetAction($"0. {MsgDefine.OUT}");
-            int input = CheckValidInput(0, player.inventory.itemCount);
+            int input = CheckValidInput(0, Inventory.Instance().items.Count);
             if(input == 0)
             {
                 DisplayInventory();
@@ -137,7 +137,7 @@ namespace Sparta
             Console.WriteLine();
 
             SetItemList();
-            WriteItemList();
+            WriteItemList(itemList);
 
             SetAction($"1. {MsgDefine.NAME}2. {MsgDefine.EQUIPPED}3. {MsgDefine.OFFENSIVE_POWER}\n4. {MsgDefine.DEFENSIVE_POWER}\n0. {MsgDefine.OUT}");
             int input = CheckValidInput(0, 4);
@@ -175,12 +175,7 @@ namespace Sparta
             Console.WriteLine($"{player.gold} {MsgDefine.GOLD}\n");
 
             SetStoreItemList();
-            Console.Write(storeItemList[0]);
-            for (int i = 1; i < storeItemList.Count; i++)
-            {
-                Console.Write($"- {storeItemList[i]}");
-            }
-            Console.WriteLine();
+            WriteItemList(storeItemList);
 
             SetAction($"1. {MsgDefine.PURCHASE_ITEM}2. {MsgDefine.SELL_ITEM}0. {MsgDefine.OUT}");
             int input = CheckValidInput(0, 2);
@@ -190,11 +185,69 @@ namespace Sparta
                     DisplayStartGame();
                     break;
                 case 1:
-                    // TODO 아이템 구매 화면으로 이동
+                    DisplayPurchase();
                     break;
                 case 2:
-                    // TODO 아이템 판매 화면으로 이동
+                    DisplaySell();
                     break;
+            }
+        }
+
+        public void DisplayPurchase()
+        {
+            SetTitle($"{MsgDefine.STORE} - {MsgDefine.PURCHASE_ITEM}\n");
+            Console.Write(MsgDefine.EXPLAN_STORE);
+            Console.WriteLine();
+
+            Console.Write(MsgDefine.GOLD_POSSESSION);
+            Console.WriteLine($"{player.gold} {MsgDefine.GOLD}\n");
+
+            SetStoreItemList();
+            Console.BackgroundColor = ConsoleColor.Green;
+            Console.Write(storeItemList[0]);
+            for (int i = 1; i < storeItemList.Count; i++)
+            {
+                Console.Write($"- {i} {storeItemList[i]}");
+            }
+            Console.WriteLine();
+            Console.ResetColor();
+
+            SetAction($"0. {MsgDefine.OUT}");
+            int input = CheckValidInput(0, Store.Instance().items.Count);
+            if (input == 0)
+            {
+                DisplayStore();
+            }
+            else
+            {
+                WritePurchaseResult(player.Purchase(--input));
+                Thread.Sleep(1000);
+                DisplayPurchase();
+            }
+        }
+
+        public void DisplaySell()
+        {
+            SetTitle($"{MsgDefine.STORE} - {MsgDefine.SELL_ITEM}\n");
+            Console.Write(MsgDefine.EXPLAN_STORE);
+            Console.WriteLine();
+
+            Console.Write(MsgDefine.GOLD_POSSESSION);
+            Console.WriteLine($"{player.gold} {MsgDefine.GOLD}\n");
+
+            SetStoreItemList();
+            WriteItemList(storeItemList);
+
+            SetAction($"0. {MsgDefine.OUT}");
+            int input = CheckValidInput(0, Store.Instance().items.Count);
+            if (input == 0)
+            {
+                DisplayStore();
+            }
+            else
+            {
+                player.Sell(input);
+                DisplaySell();
             }
         }
 
@@ -222,7 +275,7 @@ namespace Sparta
             itemList.Clear();
             itemList.Add($"{MsgDefine.LIST_ITEM}\n");
 
-            foreach (Item item in player.inventory.items)
+            foreach (Item item in Inventory.Instance().items)
             {
                 string tmp = "";
                 if (item.equipped)
@@ -248,27 +301,25 @@ namespace Sparta
             storeItemList.Clear();
             storeItemList.Add($"{MsgDefine.LIST_ITEM}\n");
 
-            // TODO 상점 아이템 품목으로 변경해야 함
-            foreach (DefensiveItem item in player.inventory.defensiveItems)
+            foreach (Item item in Store.Instance().items)
             {
                 string tmp = "";
-                if (item.equipped)
+                if (item.type == (int)ItemType.DefensiveItem)
                 {
-                    tmp += MsgDefine.EQUIP;
+                    tmp += string.Format("{0,-15}|{1,-10} +{2}|{3,-30}|", item.name, MsgDefine.DEFENSIVE_POWER, item.effect, item.explanation);
                 }
-                tmp += $"{item.name}  | {MsgDefine.DEFENSIVE_POWER} +{item.effect} | {item.explanation}\n";
-
-                storeItemList.Add(tmp);
-            }
-
-            foreach (AttackItem item in player.inventory.attackItems)
-            {
-                string tmp = "";
-                if (item.equipped)
+                else
                 {
-                    tmp += MsgDefine.EQUIP;
+                    tmp += string.Format("{0,-15}|{1,-10} +{2}|{3,-30}|", item.name, MsgDefine.OFFENSIVE_POWER, item.effect, item.explanation);
                 }
-                tmp += $"{item.name}  | {MsgDefine.OFFENSIVE_POWER} +{item.effect} | {item.explanation}\n";
+                if (item.purchased)
+                {
+                    tmp += string.Format("{0,10}\n", MsgDefine.PURCHASED);
+                }
+                else
+                {
+                    tmp += string.Format("{0,10} G\n", item.price);
+                }
 
                 storeItemList.Add(tmp);
             }
@@ -330,17 +381,34 @@ namespace Sparta
             Console.Write(MsgDefine.INPUT_ACTION);
         }
 
-        public void WriteItemList()
+        public void WriteItemList(List<string> items)
         {
-            Console.Write(itemList[0]);
-            for (int i = 1; i < itemList.Count; i++)
+            Console.Write(items[0]);
+            for (int i = 1; i < items.Count; i++)
             {
-                Console.Write($"- {itemList[i]}");
+                Console.Write($"- {items[i]}");
             }
             Console.WriteLine();
         }
 
-        // 0, 1, 2
+        public void WritePurchaseResult(PurchaseType result)
+        {
+            switch (result)
+            {
+                case PurchaseType.NoMore:
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.Write($"\n{MsgDefine.NO_MORE}");
+                    break;
+                case PurchaseType.LackGold:
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.Write($"\n{MsgDefine.LACK_GOLD}");
+                    break;
+                case PurchaseType.Success:
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.Write($"\n{MsgDefine.SUCCESS}");
+                    break;
+            }
+        }
         public int CheckValidInput(int min, int max)
         {
             while (true)
